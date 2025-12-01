@@ -37,10 +37,12 @@ app.use(
 );
 
 import userRoute from "./src/routes/user.router.js";
+import authRoute from "./src/routes/auth.router.js";
 
 app.use(express.json({ limit: "40kb" }));
 app.use(express.urlencoded({ limit: "40kb", extended: true }));
 
+app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", userRoute);
 
 app.get("/ping", (req, res) => {

@@ -1,108 +1,9 @@
 import { User } from "../models/user.model.js";
 import { Meeting } from "../models/meeting.model.js";
 import httpStatus from "http-status";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import { JWT_EXPIRES_IN, JWT_SECRET } from "../config/env.js";
 
-const register = async (req, res) => {
-  const { name, email, password } = req.body ?? {};
-
-  if (!name || !email || !password) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .json({ message: "Please provide data to continue" });
-  }
-
-  // email check call
-  if (!validateEmail(email)) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .json({ message: "Invalid email format" });
-  }
-
-  try {
-    // To check if user alredy exist or not
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser) {
-      return res.status(httpStatus.FOUND).json({
-        message:
-          "User with the given email already exits! Please try another email.",
-      });
-    }
-
-    // to hash the password entered by user
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // thus new user is created
-    const newUser = new User({
-      name,
-      email,
-      password: hashedPassword,
-    });
-
-    await newUser.save();
-    return res
-      .status(httpStatus.CREATED)
-      .json({ message: "User Registered Successfully" });
-  } catch (e) {
-    res.status(httpStatus.BAD_REQUEST).json({
-      message: `${e}`,
-    });
-  }
-};
-
-const login = async (req, res) => {
-  const { email, password } = req.body ?? {};
-
-  if (!email || !password) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .json({ message: "Please provide data to continue" });
-  }
-
-  // email check
-  if (!validateEmail(email)) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .json({ message: "Invalid email format" });
-  }
-
-  try {
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res
-        .status(httpStatus.NOT_FOUND)
-        .json({ message: "User not found!" });
-    }
-
-    let isPasswordCorrect = await bcrypt.compare(password, user.password);
-
-    if (isPasswordCorrect) {
-      // create token for user
-      const token = jwt.sign(
-        { id: user._id, email: user.email }, // payload
-        JWT_SECRET, // Secret from .env
-        { expiresIn: JWT_EXPIRES_IN } // expiry timeline
-      );
-
-      return res
-        .status(httpStatus.OK)
-        .json({ message: "Logged in Successfully", token });
-    } else {
-      return res
-        .status(httpStatus.UNAUTHORIZED)
-        .json({ message: "Invalid email or password" });
-    }
-  } catch (e) {
-    return res.status(500).json({ message: `Something went wrong ${e}` });
-  }
-};
-
-const getUserHistory = async (req, res) => {
+export const getUserHistory = async (req, res) => {
   try {
     if (!req.user) {
       return res
@@ -133,7 +34,7 @@ const getUserHistory = async (req, res) => {
   }
 };
 
-const addToHistory = async (req, res) => {
+export const addToHistory = async (req, res) => {
   try {
     const { id } = req.user;
     const { meeting_code } = req.body;
@@ -156,16 +57,11 @@ const addToHistory = async (req, res) => {
   }
 };
 
-// Validate email before saving user into db
-const validateEmail = (email) => {
-  return /^\S+@\S+\.\S+$/.test(email);
-};
-
-const getDashboard = (req, res) => {
+export const getDashboard = (req, res) => {
   res.json({ message: `Hello ${req.user.email}` });
 };
 
-const clearOneHistory = async (req, res) => {
+export const clearOneHistory = async (req, res) => {
   try {
     const { id } = req.params;
     const meeting = await Meeting.findById(id);
@@ -189,7 +85,7 @@ const clearOneHistory = async (req, res) => {
   }
 };
 
-const clearAllHistory = async (req, res) => {
+export const clearAllHistory = async (req, res) => {
   try {
     const { id } = req.user;
     const user = await User.findById(id);
@@ -204,14 +100,4 @@ const clearAllHistory = async (req, res) => {
       .status(httpStatus.INTERNAL_SERVER_ERROR)
       .json({ message: `${e}` });
   }
-};
-
-export {
-  register,
-  login,
-  getUserHistory,
-  addToHistory,
-  getDashboard,
-  clearOneHistory,
-  clearAllHistory,
 };
