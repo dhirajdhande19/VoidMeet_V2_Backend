@@ -63,18 +63,21 @@ src/
 Create `.env` (or use `.env.example`):
 
 ```env
+ATLAS_URL="your-mongo-atlas-url"
+JWT_SECRET=any-random-string
+JWT_EXPIRES_IN=7d
 PORT=8080
-ATLAS_URL=
-JWT_EXPIRES_IN=
-JWT_SECRET=
+
+# Google OAuth
+# 1. go to google console 
+# 2. create project 
+# 3. create OAuth client and u'll get these KEYS
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_REDIRECT_URI="http://localhost:8080/api/v1/auth/google/callback" # if port === 8080
 
 # Frontend url
 FRONTEND_URL="http://localhost:5173"
-
-# Google OAuth
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_REDIRECT_URI=
 ```
 
 ---
