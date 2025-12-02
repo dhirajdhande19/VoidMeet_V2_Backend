@@ -160,8 +160,6 @@ export const googleCallback = async (req, res) => {
       { expiresIn: JWT_EXPIRES_IN }
     );
 
-    // just return json for now
-    return res.json({ token });
     return res.redirect(`${FRONTEND_URL}/auth/success?token=${token}`);
   } catch (e) {
     return res.status(500).json({
@@ -173,5 +171,7 @@ export const googleCallback = async (req, res) => {
 };
 
 export const validUser = async (req, res) => {
-  return res.json(req.user);
+  return res.json({
+    user: req.user,
+  });
 };
