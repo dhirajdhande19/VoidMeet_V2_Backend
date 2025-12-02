@@ -12,19 +12,13 @@ export const authMiddleware = async (req, res, next) => {
 
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    const user = await User.findById(decoded.userId).select("-password");
+    const user = await User.findById(decoded._id).select("-password");
 
     if (!user) {
       return res.status(401).json({ message: "Invalid token" });
     }
 
-    req.user = {
-      id: user._id.toString(),
-      _id: user._id.toString(),
-      email: user.email,
-      name: user.name,
-      googleId: user.googleId,
-    };
+    req.user = user;
 
     next();
   } catch (err) {

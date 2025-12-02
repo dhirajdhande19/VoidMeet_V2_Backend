@@ -89,7 +89,7 @@ export const login = async (req, res) => {
     if (isPasswordCorrect) {
       // create token for user
       const token = jwt.sign(
-        { id: user._id, email: user.email }, // payload
+        { _id: user._id.toString(), email: user.email }, // payload
         JWT_SECRET, // Secret from .env
         { expiresIn: JWT_EXPIRES_IN } // expiry timeline
       );
@@ -153,7 +153,7 @@ export const googleCallback = async (req, res) => {
 
     const token = jwt.sign(
       {
-        userId: user._id,
+        _id: user._id.toString(),
         email: user.email,
       },
       JWT_SECRET,

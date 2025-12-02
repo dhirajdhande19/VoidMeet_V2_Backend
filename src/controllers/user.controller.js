@@ -10,8 +10,8 @@ export const getUserHistory = async (req, res) => {
         .status(401)
         .json({ error: "Unauthorized - No user found in request" });
     }
-
-    const userId = req.user.id || req.user._id;
+    console.log("req.user = ", req.user);
+    const userId = req.user._id;
 
     // Validate userId format
     if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -36,7 +36,7 @@ export const getUserHistory = async (req, res) => {
 
 export const addToHistory = async (req, res) => {
   try {
-    const { id } = req.user;
+    const id = req.user._id;
     const { meeting_code } = req.body;
     const user = await User.findOne({ _id: id });
     const newMeeting = new Meeting({
