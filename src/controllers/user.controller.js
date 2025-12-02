@@ -11,21 +11,8 @@ export const getUserHistory = async (req, res) => {
         .json({ error: "Unauthorized - No user found in request" });
     }
     console.log("req.user = ", req.user);
-    const userId = req.user._id;
+    const userId = req.user._id.toString();
 
-    // Validate userId format
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ error: "Invalid user ID" });
-    }
-
-    // Check if user exists in DB
-    const userExists = await User.findById(userId);
-
-    if (!userExists) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Fetch meetings for the user
     const meetings = await Meeting.find({ user_id: userId }).sort({ date: -1 });
 
     res.json(meetings);
@@ -36,9 +23,15 @@ export const getUserHistory = async (req, res) => {
 
 export const addToHistory = async (req, res) => {
   try {
-    const id = req.user._id;
+    const userId = req.user._id.toString();
     const { meeting_code } = req.body;
-    const user = await User.findOne({ _id: id });
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     const newMeeting = new Meeting({
       user_id: user._id,
       meetingCode: meeting_code,
@@ -46,12 +39,15 @@ export const addToHistory = async (req, res) => {
 
     await newMeeting.save();
 
-    await User.findByIdAndUpdate(id, { $push: { meetings: newMeeting._id } });
-    res
+    await User.findByIdAndUpdate(userId, {
+      $push: { meetings: newMeeting._id },
+    });
+
+    return res
       .status(httpStatus.CREATED)
       .json({ message: "Added code to history", user });
   } catch (e) {
-    res.json({
+    return res.status(500).json({
       message: `${e}`,
     });
   }

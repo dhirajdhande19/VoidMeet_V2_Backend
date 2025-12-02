@@ -12,7 +12,7 @@ export const authMiddleware = async (req, res, next) => {
 
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    const user = await User.findById(decoded._id).select("-password");
+    const user = await User.findById(decoded.userId).select("-password");
 
     if (!user) {
       return res.status(401).json({ message: "Invalid token" });
