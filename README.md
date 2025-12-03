@@ -5,7 +5,7 @@ Backend for VoidMeet v2 — a real-time WebRTC video calling app powered by Sock
 This version includes **Google OAuth**, improved cleanup logic, and a cleaner auth flow.
 
 👉 **Frontend (v2):**  [VoidMeet_V2_Frontend](https://github.com/dhirajdhande19/VoidMeet_V2_Frontend)  
-👉 **Live App:**  [void-meet-v2-frontend.vercel.app](https://void-meet-v2-frontend.vercel.app)
+👉 **Live App:**  [voidmeet.vercel.app](https://voidmeet.vercel.app)
 
 ---
 
