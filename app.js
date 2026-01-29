@@ -15,11 +15,11 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization",
   );
   res.header(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS",
   );
   res.header("Access-Control-Allow-Credentials", "true");
 
@@ -36,7 +36,7 @@ app.use(
       "https://void-meet-v2-frontend.vercel.app",
     ],
     credentials: true,
-  })
+  }),
 );
 
 import userRoute from "./src/routes/user.router.js";
@@ -49,7 +49,7 @@ app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", userRoute);
 
 app.get("/ping", (req, res) => {
-  res.status(200).json({ message: "Ok" });
+  return res.status(200).json({ status: "ok" });
 });
 
 const start = async () => {
